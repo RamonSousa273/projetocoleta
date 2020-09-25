@@ -1,4 +1,8 @@
-<?php session_start(); ?>
+<?php session_start(); 
+include_once("./../class.php");
+include_once("./../funcoes.php");
+$aux = new Coleta();
+?>
 <!DOCTYPE html>
 <html lang="pt-br" dir="ltr">
   <head>
@@ -61,20 +65,6 @@ if (isset($_POST['ini'])) {
   </script>
   <?php
 }
-if (isset($_POST['info'])) {
-  ?>
-  <script type="text/javascript">
-      window.location.href = "informacao.php";
-  </script>
-  <?php
-}
-if (isset($_POST['emb'])) {
-  ?>
-  <script type="text/javascript">
-      window.location.href = "embarque.php";
-  </script>
-  <?php
-}
 if (isset($_POST['reg'])) {
   include_once("./../conexao.php");
   include_once("./../funcoes.php");
@@ -86,68 +76,8 @@ if (isset($_POST['reg'])) {
   $alt = $_POST['alt'];
   $lar = $_POST['lar'];
   $com = $_POST['com'];
-  $_SESSION['nota'] = $num;
-
-  $data = date("Y-m-d");
-  $hora = date("H:i");
-
-  $sql = "UPDATE tbdcoletas SET DATADOCUMENTADO = '$data' WHERE IDREGISTRO = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
-  $sql = "UPDATE tbdcoletas SET HORADOCUMENTADO = '$hora' WHERE IDREGISTRO = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
-
-  $sql = "SELECT * FROM tbdnf WHERE IDCOLETA = '$id' AND NUMERONOTA = '$num'";
-  $sql = $conn->query($sql) or die($conn->error);
-  $dado = $sql->fetch_array();
-  if(is_array($dado)){
-    $id2 = $dado['IDREGISTRO'];
-
-    $sql = "INSERT INTO tbddadosnf(IDNF, ALTURA, LARGURA, COMPRIMENTO, PESOREAL, QUANTIDADE)
-    VALUES('$id2', '$alt', '$lar', '$com', '$pes', '$vol')";
-    $sql = $conn->query($sql) or die($conn->error);
-
-    $sql = "UPDATE tbdcoletas SET DOCUMENTADO = '1' WHERE IDREGISTRO = '$id'";
-    $sql = $conn->query($sql) or die($conn->error);
-
-    $sql = "UPDATE tbdcoletas SET DATADOCUMENTADO = '$data' WHERE IDREGISTRO = '$id'";
-    $sql = $conn->query($sql) or die($conn->error);
-    $sql = "UPDATE tbdcoletas SET HORADOCUMENTADO = '$hora' WHERE IDREGISTRO = '$id'";
-    $sql = $conn->query($sql) or die($conn->error);
-
-    ?>
-    <script type="text/javascript">
-        window.location.href = "confirmaNota.php";
-    </script>
-    <?php
-
-  }else{
-    $sql = "INSERT INTO tbdnf(IDCOLETA, NUMERONOTA) VALUES('$id', '$num')";
-    $sql = $conn->query($sql) or die($conn->error);
-
-    $sql = "SELECT * FROM tbdnf WHERE IDCOLETA = '$id' AND NUMERONOTA = '$num'";
-    $sql = $conn->query($sql) or die($conn->error);
-    $dado = $sql->fetch_array();
-    $id2 = $dado['IDREGISTRO'];
-
-    $sql = "INSERT INTO tbddadosnf(IDNF, ALTURA, LARGURA, COMPRIMENTO, PESOREAL, QUANTIDADE)
-    VALUES('$id2', '$alt', '$lar','$com', '$pes', '$vol')";
-    $sql = $conn->query($sql) or die($conn->error);
-
-    $sql = "UPDATE tbdcoletas SET DOCUMENTADO = '1' WHERE IDREGISTRO = '$id'";
-    $sql = $conn->query($sql) or die($conn->error);
-
-    $sql = "UPDATE tbdcoletas SET DATADOCUMENTADO = '$data' WHERE IDREGISTRO = '$id'";
-    $sql = $conn->query($sql) or die($conn->error);
-    $sql = "UPDATE tbdcoletas SET HORADOCUMENTADO = '$hora' WHERE IDREGISTRO = '$id'";
-    $sql = $conn->query($sql) or die($conn->error);
-
-    ?>
-    <script type="text/javascript">
-        window.location.href = "confirmaNota.php";
-    </script>
-    <?php
-  }
-
+  
+  $aux->addInfo($id, $num, $vol, $pes, $alt, $lar, $com);
 
 }
  ?>

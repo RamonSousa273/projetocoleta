@@ -33,7 +33,6 @@ function verificaEstagio($dado){
     $volta['con'] = "";
   }
 return($volta);
-
 }
 
  ?>

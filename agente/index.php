@@ -1,6 +1,9 @@
 <?php
 session_start();
 $_SESSION['id'] = "";
+include_once("./../conexao.php");
+include_once("./../class.php");
+$aux = new Coleta;
  ?>
 <!DOCTYPE html>
 <html lang="pt-br" dir="ltr">
@@ -14,7 +17,6 @@ $_SESSION['id'] = "";
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/index.css">
     <script type="text/javascript">
-
       Redirect();
       function Redirect()
       {
@@ -36,72 +38,85 @@ $_SESSION['id'] = "";
 
         <div class="grid">
           <?php
-          include_once("./../conexao.php");
-          include_once("./../funcoes.php");
-          $sql = "SELECT * FROM tbdcoletas WHERE CONCLUIDO = '0'";
-          $sql = $conn->query($sql) or die($conn->error);
-          while($dado = $sql->fetch_array()){
-            $id = $dado['IDREGISTRO'];
+          $registros = $aux->getColeta(0);
+          $q = count($registros);
+          for ($i=0; $i < $q ; $i++) {
+            $id = $registros[$i]['IDREGISTRO'];
             $coletado = "disabled";
             $info = "disabled";
             $emb = "disabled";
             $aceitar = "";
-            if ($dado['ACEITA'] == 1) {
+			      $obs = "disabled";
+            if ($registros[$i]['ACEITA'] == 1) {
 
               $coletado = "";
               $aceitar = "disabled";
             }
-            if ($dado['COLETADO'] == 1) {
+            if ($registros[$i]['COLETADO'] == 1) {
               $info = "";
               $coletado = "disabled";
             }
-            if ($dado['EMITIDO'] == 1) {
+            if ($registros[$i]['EMITIDO'] == 1) {
               $info = "disabled";
               $emb = "";
             }
-            if ($dado['EMBARQUE'] == 1) {
+            if ($registros[$i]['EMBARQUE'] == 1) {
               $emb = "";
             }
+			if($registros[$i]['OBSERVACAO'] != ""){
+				$obs = "";
+			}
 
            ?>
-           <div class="conteudo">
-             <p>Numero da colta: <?php echo $dado['NUMEROCOLETA']; ?></p>
-             <p>PDF Coleta: <a href="<?php echo $dado['PDFCOLETA']; ?>" download="<?php echo $dado['PDFCOLETA']; ?>" >DOWNLOAD</a></p>
+           <div class="conteudo" style="padding: 10px;">
+             <p>Numero da colta: <?php echo $registros[$i]['NUMEROCOLETA']; ?>
+			 <button id="btn" <?php echo $obs; ?>>Observação</button></p>
+             <p>PDF Coleta: <a href="<?php echo $dado['PDFCOLETA']; ?>" download="<?php echo $registros[$i]['PDFCOLETA']; ?>" >DOWNLOAD</a></p>
+			 <p style="display: none;" id="text"><?php echo($registros[$i]['OBSERVACAO']); ?></p>
              <?php
-             if ($dado['EMITIDO'] != 0) {
-               $sql2 = "SELECT * FROM tbdcte WHERE IDCOLETA = '$id'";
-               $sql2 = $conn->query($sql2) or die($conn->error);
-               while($dado2 = $sql2->fetch_array()){
+             if ($registros[$i]['EMITIDO'] != 0) {
+
+               $ctes = $aux -> getCte($registros[$i]['IDREGISTRO']);
+               $j = count($ctes);
+               for ($c=0; $c < $j ; $c++) {
               ?>
-              <p> <a href="<?php echo $dado2['CTE']; ?>" download="<?php echo $dado2['CTE']; ?>" >DOWNLOAD CTE</a> </p>
+              <p> <a href="<?php echo $ctes[$c]['CTE']; ?>" download="<?php echo $ctes[$c]['CTE']; ?>" >DOWNLOAD CTE</a> </p>
             <?php } ?>
             <?php
-            $sql2 = "SELECT * FROM tbdautorizacao WHERE IDCOLETA = '$id'";
-            $sql2 = $conn->query($sql2) or die($conn->error);
-            while($dado2 = $sql2->fetch_array()){
+            $auto = $aux -> getAutorizacao($registros[$i]['IDREGISTRO']);
+            $j = count($auto);
+            for ($c=0; $c < $j ; $c++) {
            ?>
-           <p> <a href="<?php echo $dado2['AUTORIZACAO']; ?>" download="<?php echo $dado2['AUTORIZACAO']; ?>">DOWNLOAD AUTORIZACAO</a> </p>
+           <p> <a href="<?php echo $auto[$c]['AUTORIZACAO']; ?>" download="<?php echo $auto[$c]['AUTORIZACAO']; ?>">DOWNLOAD AUTORIZACAO</a> </p>
          <?php } ?>
           <?php } ?>
              <form class="" action="" method="post">
-               <p class="meio"> <button type="submit" value="<?php echo $dado['IDREGISTRO']; ?>" name="aceitar" <?php echo $aceitar; ?>>Aceitar</button>
-                 <button type="submit" value="<?php echo $dado['IDREGISTRO']; ?>" name="coletado" <?php echo $coletado; ?>>Coletado</button>
-                 <button type="submit" value="<?php echo $dado['IDREGISTRO']; ?>" name="info" <?php echo $info; ?>>Adicionar Informação</button>
+               <p class="meio"> <button type="submit" value="<?php echo $registros[$i]['IDREGISTRO']; ?>" name="aceitar" <?php echo $aceitar; ?>>Aceitar</button>
+                 <button type="submit" value="<?php echo $registros[$i]['IDREGISTRO']; ?>" name="coletado" <?php echo $coletado; ?>>Coletado</button>
+                 <button type="submit" value="<?php echo $registros[$i]['IDREGISTRO']; ?>" name="info" <?php echo $info; ?>>Adicionar Informação</button>
                </p>
-               <p class="meio"> <button type="submit" value="<?php echo $dado['IDREGISTRO']; ?>" name="emb" <?php echo $emb; ?>>Informar embarque</button> </p>
+               <p class="meio"> <button type="submit" value="<?php echo $registros[$i]['IDREGISTRO']; ?>" name="emb" <?php echo $emb; ?>>Informar embarque</button> </p>
              </form>
            </div>
           <?php } ?>
-
-
           </div>
-          </div>
-
+         </div>
         </div>
+	   </div>
       </div>
-
-
-    </div>
+	  <script type="text/javascript">
+      "use strict";
+    var switchText = document.getElementById("btn");
+    var elToggled = document.getElementById("text");
+    elToggled.style.display = "none";
+    switchText.addEventListener("click", function(){
+        if(elToggled.style.display == "block") {
+            elToggled.style.display = "none";
+        } else {
+            elToggled.style.display = "block";
+        }
+    }, false);
+  </script>
   </body>
 </html>
 <?php
@@ -130,17 +145,9 @@ if (isset($_POST['emb'])) {
   <?php
 }
 if (isset($_POST['aceitar'])) {
-  include_once("./../conexao.php");
-  include_once("./../funcoes.php");
   $id = $_POST['aceitar'];
-  $data = date("Y-m-d");
-  $hora = date("H:i");
-  $sql = "UPDATE tbdcoletas SET ACEITA = '1' WHERE IDREGISTRO = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
-  $sql = "UPDATE tbdcoletas SET DATAACEITE = '$data' WHERE IDREGISTRO = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
-  $sql = "UPDATE tbdcoletas SET HORAACEITE = '$hora' WHERE IDREGISTRO = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
+  $aux->aceitar($id);
+  
   ?>
   <script type="text/javascript">
       window.location.href = "index.php";
@@ -148,17 +155,8 @@ if (isset($_POST['aceitar'])) {
   <?php
 }
 if (isset($_POST['coletado'])) {
-  include_once("./../conexao.php");
-  include_once("./../funcoes.php");
   $id = $_POST['coletado'];
-  $data = date("Y-m-d");
-  $hora = date("H:i");
-  $sql = "UPDATE tbdcoletas SET COLETADO = '1' WHERE IDREGISTRO = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
-  $sql = "UPDATE tbdcoletas SET DATACOLETADO = '$data' WHERE IDREGISTRO = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
-  $sql = "UPDATE tbdcoletas SET HORACOLETADO = '$hora' WHERE IDREGISTRO = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
+  $aux->coletado($id);
   ?>
   <script type="text/javascript">
       window.location.href = "index.php";

@@ -1,4 +1,8 @@
-<?php session_start(); ?>
+<?php session_start(); 
+include_once("./../class.php");
+include_once("./../funcoes.php");
+$aux = new Coleta();
+?>
 <!DOCTYPE html>
 <html lang="pt-br" dir="ltr">
   <head>
@@ -32,23 +36,27 @@
         <h3>COLETAS</h3>
         <div class="grid">
           <?php
-          include_once("./../conexao.php");
-          include_once("./../funcoes.php");
-          $sql = "SELECT * FROM tbdcoletas WHERE DOCUMENTADO = '1' AND CONCLUIDO = '0'";
-          $sql = $conn->query($sql) or die($conn->error);
-          while($dado = $sql->fetch_array()){
+          
+          $dado = $aux->getColeta(1);
+		  $c = count($dado);
+          for($i=0; $i<$c; $i++){
             $anexa = "disabled";
-            if ($dado['VISTODADOS'] == 1) {
+            if ($dado[$i]['VISTODADOS'] == 1) {
               $anexa = "";
             }
+			if ($dado[$i]['EMITIDO'] == 1){
+				$stl = "style=\"color: green;\"";
+			}else{
+				$stl = "style=\"color: green;  display: none;\"";
+			}
            ?>
           <form class="" action="" method="post">
           <div class="conteudo">
-            <p>Numero da coleta: <?php echo $dado['NUMEROCOLETA']; ?> |
-              <a href="<?php echo $dado['PDFCOLETA']; ?>" download="<?php echo $dado['PDFCOLETA']; ?>" >DOWNLOAD PDF</a>
-              | Cliente: <?php echo $dado['CLIENTE']; ?>
+            <p>Numero da coleta: <?php echo $dado[$i]['NUMEROCOLETA']; ?> |
+              <a href="<?php echo $dado[$i]['PDFCOLETA']; ?>" download="<?php echo $dado[$i]['PDFCOLETA']; ?>" >DOWNLOAD PDF</a>
+              | Cliente: <?php echo $dado[$i]['CLIENTE']; ?> <i class="fa fa-check-circle" <?php echo $stl; ?>></i>
             </p>
-            <p> <button type="submit" class="btn btn-primary" value="<?php echo $dado['IDREGISTRO']; ?>" name="dados">Dados da coleta</button> <button type="submit" class="btn btn-secondary" value="<?php echo $dado['IDREGISTRO']; ?>" name="anexar" <?php echo $anexa; ?>>Anexar CTE/AUTORIZAÇÃO</button> </p>
+            <p> <button type="submit" class="btn btn-primary" value="<?php echo $dado[$i]['IDREGISTRO']; ?>" name="dados">Dados da coleta</button> <button type="submit" class="btn btn-secondary" value="<?php echo $dado[$i]['IDREGISTRO']; ?>" name="anexar" <?php echo $anexa; ?>>Anexar CTE/AUTORIZAÇÃO</button> </p>
           </div>
           </form>
         <?php } ?>

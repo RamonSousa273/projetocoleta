@@ -105,7 +105,7 @@ if (isset($_POST['ini'])) {
   <?php
 }
 if (isset($_POST['cad'])) {
-  include_once("./../preventivo.php");
+  /*include_once("./../preventivo.php");
   include_once("./../conexao.php");
   $coleta = removeCaracteresSQL($_POST['numC']);
   $cliente = removeCaracteresSQL($_POST['cliente']);
@@ -120,7 +120,7 @@ if (isset($_POST['cad'])) {
   $dataso = date("Y-m-d");
 
   $ext = ".pdf";
-  $new_name = $coleta . $ext;
+  $new_name = $_FILES['pdf']['name'];
   $dir = "./../uploads/";
 
   if (move_uploaded_file($_FILES['pdf']['tmp_name'], $dir.$new_name)) {
@@ -142,6 +142,43 @@ if (isset($_POST['cad'])) {
     window.location.href = "index.php";
   </script>
   <?php
-}
+}*/
+
+include_once("./../preventivo.php");
+include_once("./../conexao.php");
+include_once("./../class.php");
+
+$coleta = removeCaracteresSQL($_POST['numC']);
+$cliente = removeCaracteresSQL($_POST['cliente']);
+$hora = removeCaracteresSQL($_POST['hora']);
+$hora2 = removeCaracteresSQL($_POST['hora2']);
+$lacre = removeCaracteresSQL($_POST['lacre']);
+$observacao = removeCaracteresSQL($_POST['obs']);
+$agente = removeCaracteresSQL($_POST['agente']);
+$datalim = removeCaracteresSQL($_POST['dtlim']);
+$horalim = removeCaracteresSQL($_POST['horalim']);
+$pdf = $_FILES['pdf'];
+
+$col = new Coleta;
+$col->numeroColeta = $coleta;
+$col->cliente = $cliente;
+$col->agente = $agente;
+$col->horaIni = $hora;
+$col->horaFim = $hora2;
+$col->lacre = $lacre;
+$col->dataLim = $datalim;
+$col->horaLim = $horalim;
+$col->observacao = $observacao;
+$col->pdfColeta = $pdf;
+
+$col -> setColeta();
+
+?>
+<script type="text/javascript">
+    alert("Registrado com sucesso!");
+    window.location.href = "index.php";
+</script>
+<?php
+
 }
  ?>

@@ -1,4 +1,8 @@
-<?php session_start(); ?>
+<?php session_start(); 
+    include_once("./../class.php");
+    include_once("./../funcoes.php");
+	$aux = new Coleta();
+?>
 <!DOCTYPE html>
 <html lang="pt-br" dir="ltr">
   <head>
@@ -16,7 +20,7 @@
       Redirect();
       function Redirect()
       {
-              setTimeout("location.reload(true);",120000);
+		setTimeout("location.reload(true);",120000);
       }
     </script>
   </head>
@@ -37,19 +41,19 @@
         </div>
         <div class="grid">
           <?php
-          include_once("./../conexao.php");
-          include_once("./../funcoes.php");
-          $sql = "SELECT * FROM tbdcoletas WHERE CONCLUIDO = '0' ORDER BY DATALIMITE";
-          $sql = $conn->query($sql) or die($conn->error);
-          while($dado = $sql->fetch_array()){
-            $progresso = verificaEstagio($dado);
+
+          $coletas = new Coleta;
+          $registros = $coletas -> getColeta(0);
+          $q = count($registros);
+          for ($i=0; $i < $q ; $i++) {
+            $progresso = verificaEstagio($registros[$i]);
            ?>
           <div class="conteudo">
             <form class="" action="" method="post">
-            <p>Numero da coleta: <?php echo $dado['NUMEROCOLETA']; ?> <button style="background-color: #FA5858;" type="submit" name="excluir" value="<?php echo $dado['IDREGISTRO']; ?>">Excluir</button>
-              <button style="background-color: #2E9AFE;" type="submit" name="dados" value="<?php echo $dado['IDREGISTRO']; ?>">Dados</button>
-              <button style="background-color: #64FE2E;" type="submit" name="consolidar" value="<?php echo $dado['IDREGISTRO'];?>" <?php echo $progresso['con']; ?> >Consolidar</button>
-              <?php echo date('d/m/Y', strtotime($dado['DATALIMITE'])); ?>
+            <p>Numero da coleta: <?php echo $registros[$i]['NUMEROCOLETA']; ?> <button style="background-color: #FA5858;" type="submit" name="excluir" value="<?php echo $registros[$i]['IDREGISTRO']; ?>">Excluir</button>
+              <button style="background-color: #2E9AFE;" type="submit" name="dados" value="<?php echo $registros[$i]['IDREGISTRO']; ?>">Dados</button>
+              <button style="background-color: #64FE2E;" type="submit" name="consolidar" value="<?php echo $registros[$i]['IDREGISTRO'];?>" <?php echo $progresso['con']; ?> >Consolidar</button>
+              <?php echo date('d/m/Y', strtotime($registros[$i]['DATALIMITE'])); ?>
             </p>
 
             </form>
@@ -89,9 +93,7 @@ if (isset($_POST['dados'])) {
 }
 if (isset($_POST['excluir'])) {
   $id = $_POST['excluir'];
-  include_once("./../conexao.php");
-  $sql = "DELETE FROM tbdcoletas WHERE IDREGISTRO = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
+  $aux -> excluir($id);
   ?>
   <script type="text/javascript">
       window.location.href = "index.php";
@@ -100,15 +102,7 @@ if (isset($_POST['excluir'])) {
 }
 if (isset($_POST['consolidar'])) {
   $id = $_POST['consolidar'];
-  $data = date("d/m/Y");
-  $hora = date("H:i");
-  include_once("./../conexao.php");
-  $sql = "UPDATE tbdcoletas SET CONCLUIDO = '1' WHERE IDREGISTRO = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
-  $sql = "UPDATE tbdcoletas SET DATAEMBARQUE = '$data' WHERE IDREGISTRO = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
-  $sql = "UPDATE tbdcoletas SET HORAEMBARQUE = '$hora' WHERE IDREGISTRO = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
+  $aux -> consolidar($id);
   ?>
   <script type="text/javascript">
       window.location.href = "index.php";

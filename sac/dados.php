@@ -1,4 +1,9 @@
-<?php session_start(); ?>
+<?php session_start(); 
+	include_once("./../class.php");
+    include_once("./../funcoes.php");
+	include_once("./../conexao.php");
+	$aux = new Coleta();
+?>
 <!DOCTYPE html>
 <html lang="pt-br" dir="ltr">
   <head>
@@ -25,11 +30,8 @@
         <?php
 
         $id = $_SESSION['id'];
-        include_once("./../conexao.php");
-        include_once("./../funcoes.php");
-        $sql = "SELECT * FROM tbdcoletas WHERE IDREGISTRO = '$id'";
-        $sql = $conn->query($sql) or die($conn->error);
-        $dado = $sql->fetch_array();
+        $dado = $aux->getDados($id);
+        
         $cor = verificaEstagio($dado);
          ?>
         <div class="dados">
@@ -89,6 +91,35 @@
               <p>Hora Embarque: <?php echo $dado['HORAEMBARQUE']; ?></p>
             </div>
           </div>
+		  <br>
+		  <table class="table table-dark table-bordered" style="float: left; width: 50%;">
+			<tr>
+				<td>CTE</td>
+			</tr>
+			<?php 
+				$dado = $aux->getCte($id);
+				$c = count($dado);
+				for($i=0; $i<$c; $i++){
+			?>
+				<tr>
+					<td><a href="<?php echo $dado[$i]['CTE']; ?>" download="<?php echo $dado[$i]['CTE']; ?>" >DOWNLOAD</a></td>
+				</tr>
+				<?php } ?>
+		  </table>
+		  <table class="table table-dark table-bordered" style="float: right; width: 50%;">
+			<tr>
+				<td>Autorização</td>
+			</tr>
+			<?php 
+				$dado = $aux->getAutorizacao($id);
+				$c = count($dado);
+				for($i=0; $i<$c; $i++){
+			?>
+				<tr>
+					<td><a href="<?php echo $dado[$i]['AUTORIZACAO']; ?>" download="<?php echo $dado[$i]['AUTORIZACAO']; ?>" >DOWNLOAD</a></td>
+				</tr>
+				<?php } ?>
+		  </table>
         </div>
       </div>
     </div>

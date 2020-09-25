@@ -38,7 +38,7 @@
 }
 .grid{
   display: grid;
-  grid-template-columns: 20% 60% 19%;
+  grid-template-columns: 30% 40% 29%;
   grid-template-rows: auto;
   grid-gap: 10px;
   padding: 10px;
@@ -47,6 +47,7 @@
   background-color: #2E2E2E;
   border-radius: 10PX;
   height: auto;
+  padding: 10px;
 }
 .conteudo2 input{
   padding: 3px;

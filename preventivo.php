@@ -6,7 +6,6 @@ function removeCaracteresSQL($string){
   $string = str_replace("or", "", $string);
   $string = str_replace("'", "", $string);
   $string = str_replace("''", "", $string);
-  $string = str_replace(" ", "", $string);
   $string = str_replace(">", "", $string);
   $string = str_replace("<", "", $string);
   $string = str_replace("SELECT", "", $string);

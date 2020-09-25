@@ -29,10 +29,10 @@
             <form class="" enctype="multipart/form-data" action="" method="post">
               <h3>Anexar CTE/Autorização</h3>
               <p>CTE:</p>
-              <input type="file" class="form-control" name="CTE" value="">
+              <input type="file" class="form-control" name="CTE[]" value="" multiple>
               <br>
               <p>Autorização:</p>
-              <input type="file" class="form-control" name="AUTO" value="">
+              <input type="file" class="form-control" name="AUTO[]" value="" multiple>
               <br>
               <button type="submit" class="btn btn-primary" name="ANEXAR">Anexar</button>
               <br>
@@ -59,71 +59,62 @@ if (isset($_POST['ini'])) {
 }
 if (isset($_POST['ANEXAR'])) {
   include_once("./../conexao.php");
-  include_once("./../funcoes.php");
+  include_once("./../class.php");
   $id = $_SESSION['id'];
   $data = date("Y-m-d");
   $hora = date("H:i");
-if ($_FILES['CTE']['error'] == 4) {
-}else{
-  $c = 0;
-  $sql = "SELECT * FROM tbdcte WHERE IDCOLETA = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
-  while($dado = $sql->fetch_array()){
-    $c=$c+1;
-  }
+  $precte = false;
+  $preaut = false;
+	foreach($_FILES['CTE']['name'] as $ind => $val){
+    if(!empty($val)){
+		$precte = true;
+    }
+	}
+	if($precte){
+		$qtd = count($_FILES['CTE']['name']);
+		for($i = 0; $i < $qtd; $i++){
+			$dir = "./../uploads/";
+			$new_name = $_FILES['CTE']['name'][$i];
+			if(move_uploaded_file($_FILES['CTE']['tmp_name'][$i], $dir.$new_name)){
+				$local = $dir.$new_name;
+				$sql = "INSERT INTO tbdcte(CTE,IDCOLETA) VALUES('$local', '$id')";
+				$sql = $conn->query($sql) or die($conn->error);
+				$sql = "UPDATE tbdcoletas SET EMITIDO = '1' WHERE IDREGISTRO = '$id'";
+				$sql = $conn->query($sql) or die($conn->error);
+			}
+		}
+		?>
+		<script type="text/javascript">
+			alert("Anexado com sucesso!");
+			window.location.href = "index.php";
+		</script>
+  <?php
+	}
 
-  $coleta = $id."cte";
-  $ext = ".pdf";
-  $new_name = $coleta . $c . $ext;
-  $dir = "./../uploads/";
-  if (move_uploaded_file($_FILES['CTE']['tmp_name'], $dir.$new_name)){
-    $local = "./../uploads/" . $new_name;
-    $sql = "INSERT INTO tbdcte(CTE, IDCOLETA) VALUES('$local', '$id')";
-    $sql = $conn->query($sql) or die($conn->error);
-    $sql = "UPDATE tbdcoletas SET CTE = '1' WHERE IDREGISTRO = '$id'";
-    $sql = $conn->query($sql) or die($conn->error);
-    $sql = "UPDATE tbdcoletas SET EMITIDO = '1' WHERE IDREGISTRO = '$id'";
-    $sql = $conn->query($sql) or die($conn->error);
-    $sql = "UPDATE tbdcoletas SET DATAEMITIDO = '$data' WHERE IDREGISTRO = '$id'";
-    $sql = $conn->query($sql) or die($conn->error);
-    $sql = "UPDATE tbdcoletas SET HORAEMITIDO = '$hora' WHERE IDREGISTRO = '$id'";
-    $sql = $conn->query($sql) or die($conn->error);
-  }
+	foreach($_FILES['AUTO']['name'] as $ind => $val){
+		if(!empty($val)){
+			$preaut = true;
+		}
+	}
+	if($preaut){
+		$qtd = count($_FILES['AUTO']['name']);
+		for($i = 0; $i < $qtd; $i++){
+			$dir = "./../uploads/";
+			$new_name = $_FILES['AUTO']['name'][$i];
+			if(move_uploaded_file($_FILES['AUTO']['tmp_name'][$i], $dir.$new_name)){
+				$local = $dir.$new_name;
+				$sql = "INSERT INTO tbdautorizacao(AUTORIZACAO,IDCOLETA) VALUES('$local', '$id')";
+				$sql = $conn->query($sql) or die($conn->error);
+				$sql = "UPDATE tbdcoletas SET EMITIDO = '1' WHERE IDREGISTRO = '$id'";
+				$sql = $conn->query($sql) or die($conn->error);
+			}
+		}
+		?>
+		<script type="text/javascript">
+			alert("Anexado com sucesso!");
+			window.location.href = "index.php";
+		</script>
+  <?php
+	}
 }
-if ($_FILES['AUTO']['error'] == 4) {
-}else{
-
-  $c = 0;
-  $sql = "SELECT * FROM tbdautorizacao WHERE IDCOLETA = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
-  while($dado = $sql->fetch_array()){
-    $c=$c+1;
-  }
-
-  $coleta = $id."autorizacao";
-  $ext = ".pdf";
-  $new_name = $coleta . $c . $ext;
-  $dir = "./../uploads/";
-  if (move_uploaded_file($_FILES['AUTO']['tmp_name'], $dir.$new_name)){
-    $local = "./../uploads/" . $new_name;
-    $sql = "INSERT INTO tbdautorizacao(AUTORIZACAO, IDCOLETA) VALUES('$local', '$id')";
-    $sql = $conn->query($sql) or die($conn->error);
-    $sql = "UPDATE tbdcoletas SET AUTORIZACAO = '1' WHERE IDREGISTRO = '$id'";
-    $sql = $conn->query($sql) or die($conn->error);
-    $sql = "UPDATE tbdcoletas SET EMITIDO = '1' WHERE IDREGISTRO = '$id'";
-    $sql = $conn->query($sql) or die($conn->error);
-    $sql = "UPDATE tbdcoletas SET DATAEMITIDO = '$data' WHERE IDREGISTRO = '$id'";
-    $sql = $conn->query($sql) or die($conn->error);
-    $sql = "UPDATE tbdcoletas SET HORAEMITIDO = '$hora' WHERE IDREGISTRO = '$id'";
-    $sql = $conn->query($sql) or die($conn->error);
-  }
-}
-?>
-<script type="text/javascript">
-    alert("Anexado com sucesso!");
-    window.location.href = "index.php";
-</script>
-<?php
-}
-
  ?>

@@ -1,4 +1,8 @@
-<?php session_start(); ?>
+<?php session_start(); 
+include_once("./../class.php");
+  include_once("./../funcoes.php");
+  $aux = new Coleta();
+?>
 <!DOCTYPE html>
 <html lang="pt-br" dir="ltr">
   <head>
@@ -31,7 +35,9 @@
             $id = $_SESSION['id'];
              ?>
             <form class="" action="" method="post">
-            <p> Embarque: <input type="text" class="form-control" name="regval" value=""> </p>
+            <p> Numero do embarque: <input type="text" class="form-control" name="regval" value=""> </p>
+			<p> Numero do CTE: <input type="text" class="form-control" name="cte" value=""> </p>
+			<p> Transferidor: <input type="text" class="form-control" name="transferidor" value=""> </p>
             <p> <button type="submit" class="btn btn-primary" name="reg">Registrar</button> </p>
             </form>
           </div>
@@ -68,19 +74,20 @@ if (isset($_POST['emb'])) {
   <?php
 }
 if (isset($_POST['reg'])) {
-  include_once("./../conexao.php");
-  include_once("./../funcoes.php");
+  
   $id = $_SESSION['id'];
-  $data = date("Y-m-d");
-  $hora = date("H:i");
   $val = $_POST['regval'];
-  $sql = "UPDATE tbdcoletas SET EMBARQUE = '1' WHERE IDREGISTRO = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
-  $sql = "UPDATE tbdcoletas SET NUMEROEMBARQUE = '$val' WHERE IDREGISTRO = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
-  $sql = "UPDATE tbdcoletas SET DATAEMBARQUE = '$data' WHERE IDREGISTRO = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
-  $sql = "UPDATE tbdcoletas SET HORAEMBARQUE = '$hora' WHERE IDREGISTRO = '$id'";
-  $sql = $conn->query($sql) or die($conn->error);
+  $cte = $_POST['cte'];
+  $transferidor = $_POST['transferidor'];
+  
+  $aux->addEmbarque($id, $val, $cte, $transferidor);
+  
+  
+  ?>
+  <script type="text/javascript">
+	  alert("Registrado com sucesso!");
+      window.location.href = "index.php";
+  </script>
+  <?php
 }
  ?>
