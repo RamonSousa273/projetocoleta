@@ -4,6 +4,16 @@ $_SESSION['id'] = "";
 include_once("./../conexao.php");
 include_once("./../class.php");
 $aux = new Coleta;
+/*if(isset($_SESSION['AGENTE'])){
+
+}else{
+  ?>
+<script type="text/javascript">
+    alert("Faça Login!");
+    window.location.href = "./../index.php";
+</script>
+<?php
+}*/
  ?>
 <!DOCTYPE html>
 <html lang="pt-br" dir="ltr">
@@ -40,6 +50,7 @@ $aux = new Coleta;
           <?php
           $registros = $aux->getColeta(0);
           $q = count($registros);
+		  $idObs = "obser";
           for ($i=0; $i < $q ; $i++) {
             $id = $registros[$i]['IDREGISTRO'];
             $coletado = "disabled";
@@ -66,30 +77,70 @@ $aux = new Coleta;
 			if($registros[$i]['OBSERVACAO'] != ""){
 				$obs = "";
 			}
-
+      $idO = $idObs . $i;
+      $idO2 = $idO."2";
+      $idO3 = $idO."3";
            ?>
            <div class="conteudo" style="padding: 10px;">
              <p>Numero da colta: <?php echo $registros[$i]['NUMEROCOLETA']; ?>
-			 <button id="btn" <?php echo $obs; ?>>Observação</button></p>
-             <p>PDF Coleta: <a href="<?php echo $dado['PDFCOLETA']; ?>" download="<?php echo $registros[$i]['PDFCOLETA']; ?>" >DOWNLOAD</a></p>
-			 <p style="display: none;" id="text"><?php echo($registros[$i]['OBSERVACAO']); ?></p>
+			 <button id="btn" <?php echo $obs; ?> onclick="mostrarObservacao('<?php echo $idO ?>')" >Observação</button></p>
+       <?php if($registros[$i]['MEMORANDO'] == 1){
+        ?>
+        <p><button onClick="mostrarMemorando('<?php echo $idO2; ?>')">Memorando</button></p>
+        <p>
+        <table id="<?php echo $idO2; ?>" style="display: none;">
+          <?php 
+            $sql = "SELECT * FROM tbdmemorando WHERE IDCOLETA = '$id'";
+            $sql = $conn->query($sql) or die($conn->error);
+            while($dado = $sql->fetch_array()){
+          ?>
+            <tr>
+              <td><a href="<?php echo $dado['LOCALMEMORANDO']; ?>" download="<?php echo $dado['NOME']; ?>"><?php echo $dado['NOME']; ?></a></td>
+            </tr>
+            <?php } ?>
+        </table>
+        </p>
+        <?php
+       }
+       if ($registros[$i]['NOTASRETIRADA'] == 1) {
+        ?>
+        <p><button onClick="mostrarNotas('<?php echo $idO3; ?>')">Notas</button></p>
+        <p >
+        <table id="<?php echo $idO3; ?>" style="display: none;">
+          <?php 
+            $sql = "SELECT * FROM tbdnotasretirada WHERE IDCOLETA = '$id'";
+            $sql = $conn->query($sql) or die($conn->error);
+            while($dado = $sql->fetch_array()){
+          ?>
+            <tr>
+              <td><a href="<?php echo $dado['LOCALNOTARETIRADA']; ?>" download="<?php echo $dado['NOME']; ?>"><?php echo $dado['NOME']; ?></a></td>
+            </tr>
+            <?php } ?>
+        </table>
+        </p>
+        <?php
+       }
+       
+       ?>
+             <p>PDF Coleta: <a href="<?php echo $registros[$i]['PDFCOLETA']; ?>" download="<?php echo $registros[$i]['PDFNOME']; ?>" ><?php echo $registros[$i]['PDFNOME']; ?></a></p>
+			 <p>Lacre: <?php echo $registros[$i]['LACRE'] ?></p>
+			 <p style="display: none;" id="<?php echo $idO; ?>"><?php echo($registros[$i]['OBSERVACAO']); ?></p>
              <?php
-             if ($registros[$i]['EMITIDO'] != 0) {
+             
 
                $ctes = $aux -> getCte($registros[$i]['IDREGISTRO']);
                $j = count($ctes);
                for ($c=0; $c < $j ; $c++) {
               ?>
-              <p> <a href="<?php echo $ctes[$c]['CTE']; ?>" download="<?php echo $ctes[$c]['CTE']; ?>" >DOWNLOAD CTE</a> </p>
+              <p> CTE:  <a href="<?php echo $ctes[$c]['CTE']; ?>" download="<?php echo $ctes[$c]['CTE']; ?>" ><?php echo $ctes[$c]['NOME']; ?></a> </p>
             <?php } ?>
             <?php
             $auto = $aux -> getAutorizacao($registros[$i]['IDREGISTRO']);
             $j = count($auto);
             for ($c=0; $c < $j ; $c++) {
            ?>
-           <p> <a href="<?php echo $auto[$c]['AUTORIZACAO']; ?>" download="<?php echo $auto[$c]['AUTORIZACAO']; ?>">DOWNLOAD AUTORIZACAO</a> </p>
+           <p> Autorização:  <a href="<?php echo $auto[$c]['AUTORIZACAO']; ?>" download="<?php echo $auto[$c]['AUTORIZACAO']; ?>"><?php echo $auto[$c]['NOME']; ?></a> </p>
          <?php } ?>
-          <?php } ?>
              <form class="" action="" method="post">
                <p class="meio"> <button type="submit" value="<?php echo $registros[$i]['IDREGISTRO']; ?>" name="aceitar" <?php echo $aceitar; ?>>Aceitar</button>
                  <button type="submit" value="<?php echo $registros[$i]['IDREGISTRO']; ?>" name="coletado" <?php echo $coletado; ?>>Coletado</button>
@@ -105,18 +156,35 @@ $aux = new Coleta;
 	   </div>
       </div>
 	  <script type="text/javascript">
-      "use strict";
-    var switchText = document.getElementById("btn");
-    var elToggled = document.getElementById("text");
-    elToggled.style.display = "none";
-    switchText.addEventListener("click", function(){
-        if(elToggled.style.display == "block") {
-            elToggled.style.display = "none";
-        } else {
-            elToggled.style.display = "block";
-        }
-    }, false);
-  </script>
+      function mostrarObservacao(id){
+		  var text = document.getElementById(id);
+		  if(text.style.display == "block"){
+			  text.style.display = "none";
+		  }else{
+			  text.style.display = "block";
+		  }
+	  }
+	  </script>
+    <script type="text/javascript">
+      function mostrarMemorando(id){
+		  var text = document.getElementById(id);
+		  if(text.style.display == "block"){
+			  text.style.display = "none";
+		  }else{
+			  text.style.display = "block";
+		  }
+	  }
+	  </script>
+    <script type="text/javascript">
+      function mostrarNotas(id){
+		  var text = document.getElementById(id);
+		  if(text.style.display == "block"){
+			  text.style.display = "none";
+		  }else{
+			  text.style.display = "block";
+		  }
+	  }
+	  </script>
   </body>
 </html>
 <?php

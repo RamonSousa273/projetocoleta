@@ -1,5 +1,6 @@
-<?php session_start(); 
+<?php session_start();
 include_once("./../class.php");
+include_once("./../conexao.php");
 include_once("./../funcoes.php");
 $aux = new Coleta();
 ?>
@@ -30,7 +31,7 @@ $aux = new Coleta();
 
           </div>
           <div class="conteudo2">
-            <form class="" action="" method="post">
+            <form class="" enctype="multipart/form-data" action="" method="post">
               <?php
               $id = $_SESSION['id'];
               if (isset($_SESSION['nota'])) {
@@ -40,17 +41,46 @@ $aux = new Coleta();
               }
                ?>
 
-            <p>Numero da nota: <input type="text" class="form-control" name="nume" value="<?php echo $not; ?>" required> </p>
+            <p style="width: 49%; float: left;">Numero da nota: <input type="text" class="form-control" name="nume" value="<?php echo $not; ?>" required> </p>
             <?php $_SESSION['nota']=""; ?>
-            <p> Volume: <input type="text" class="form-control" name="vol" value="" required> </p>
-            <p> Peso real: <input type="text" class="form-control" name="pes" value="" required> </p>
-            <p> Altura: <input type="text" class="form-control" name="alt" value="" required> </p>
-            <p> Largura: <input type="text" class="form-control" name="lar" value="" required> </p>
-            <p> Comprimento: <input type="text" class="form-control" name="com" value="" required> </p>
-            <p> <button type="submit" class="btn btn-primary" name="reg">Registrar</button> </p>
+            <p style="width: 49%; float: right;"> Volume: <input type="text" class="form-control" name="vol" value="" required> </p>
+            <p style="width: 49%; float: left;"> Peso real: <input type="text" class="form-control" name="pes" value="" required> </p>
+            <p style="width: 49%; float: right;"> Altura: <input type="text" class="form-control" name="alt" value="" required> </p>
+            <p style="width: 49%; float: left;"> Largura: <input type="text" class="form-control" name="lar" value="" required> </p>
+            <p style="width: 49%; float: right;"> Comprimento: <input type="text" class="form-control" name="com" value="" required> </p>
+            <p style="width: 49%; float: left;"> Chave da nota: <input type="text" class="form-control" name="chave" value=""> </p>
+            <p style="width: 49%; float: right;">PDF da nota: <input style="padding: 3px;" type="file" class="form-control" name="pdfNota" value="" required> </p>
+            <p style="width: 49%; float: left;">Numero do lacre: <input type="text" class="form-control" name="lacre" id=""> </p>
+            <p style="float: left"> Dados adicionais: <textarea name="adicionais" class="form-control" rows="8" cols="80"></textarea> </p>
+            <p style="float: right"> <button type="submit" class="btn btn-primary" name="reg">Registrar</button> </p>
               </form>
           </div>
-          <div class="conteudo">
+          <div class="conteudo"  style="height: 600px; overflow: auto;">
+		  <?php
+			$id = $_SESSION['id'];
+			$sql = "SELECT * FROM tbdnf WHERE IDCOLETA = '$id'";
+			$sql = $conn->query($sql) or die($conn->error);
+			while ($dado = $sql->fetch_array()) {
+				$id2 = $dado['IDREGISTRO'];
+			$sql3 = "SELECT * FROM tbddadosnf WHERE IDNF = '$id2'";
+               $sql3 = $conn->query($sql3) or die($conn->error);
+               while ($dado3 = $sql3->fetch_array()) {
+                ?>
+                <div class="tab">
+                  <table border="1">
+				            <tr>
+				               <td style="padding: 5px;">Nota: </td><td style="padding: 5px;"><?php echo $dado['NUMERONOTA'] ?></td>
+				            </tr>
+                    <tr>
+                      <td style="padding: 5px;">Volume: </td> <td style="padding: 5px;"><?php echo $dado3['QUANTIDADE']; ?></td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 5px;">Peso Real: </td> <td style="padding: 5px;"><?php echo $dado3['PESOREAL']; ?></td>
+                    </tr>
+                  </table>
+                </div>
+                <hr>
+			<?php } } ?>
           </div>
         </div>
       </div>
@@ -76,8 +106,12 @@ if (isset($_POST['reg'])) {
   $alt = $_POST['alt'];
   $lar = $_POST['lar'];
   $com = $_POST['com'];
-  
-  $aux->addInfo($id, $num, $vol, $pes, $alt, $lar, $com);
+  $lacre = $_POST['lacre'];
+  $chave = $_POST['chave'];
+  $adc = $_POST['adicionais'];
+  $nota = $_FILES['pdfNota'];
+
+  $aux->addInfo($id, $num, $vol, $pes, $alt, $lar, $com, $chave, $adc, $nota, $lacre);
 
 }
  ?>

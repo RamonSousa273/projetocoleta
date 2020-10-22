@@ -1,4 +1,6 @@
-<?php session_start(); ?>
+<?php session_start(); 
+	  include_once("./../conexao.php");
+?>
 <!DOCTYPE html>
 <html lang="pt-br" dir="ltr">
   <head>
@@ -33,6 +35,9 @@
           </div>
           <div class="conteudo">
           </div>
+		  <div class="conteudo">
+		  
+          </div>
         </div>
       </div>
     </div>
@@ -43,7 +48,7 @@ if (isset($_POST['ini'])) {
   header("location: index.php");
   ?>
   <script type="text/javascript">
-      window.location.href = "embarque.php";
+      window.location.href = "index.php";
   </script>
   <?php
 }

@@ -38,20 +38,19 @@
 }
 .grid{
   display: grid;
-  grid-template-columns: 49% 50%;
+  grid-template-columns: 30% 40% 29%;
   grid-template-rows: auto;
   grid-gap: 10px;
   padding: 10px;
 }
-.conteudo{
-  width: 100%;
-  padding: 10px;
-  height: auto;
-  border-radius: 10px;
-  color: white;
-  text-align: center;
+.conteudo2{
   background-color: #2E2E2E;
+  border-radius: 10PX;
+  height: auto;
+  padding: 10px;
 }
-.conteudo a{
+.conteudo2 input{
+  padding: 3px;
+  background-color: #2E2E2E;
   color: white;
 }

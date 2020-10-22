@@ -2,6 +2,16 @@
 include_once("./../class.php");
 include_once("./../funcoes.php");
 $aux = new Coleta();
+/*if(isset($_SESSION['OPERACAO'])){
+
+}else{
+  ?>
+<script type="text/javascript">
+    alert("Faça Login!");
+    window.location.href = "./../index.php";
+</script>
+<?php
+}*/
 ?>
 <!DOCTYPE html>
 <html lang="pt-br" dir="ltr">
@@ -18,7 +28,7 @@ $aux = new Coleta();
       Redirect();
       function Redirect()
       {
-              setTimeout("location.reload(true);",120000);
+        setTimeout("location.reload(true);",120000);
       }
     </script>
   </head>
@@ -40,6 +50,7 @@ $aux = new Coleta();
           $dado = $aux->getColeta(1);
 		  $c = count($dado);
           for($i=0; $i<$c; $i++){
+            $progresso = verificaEstagio($dado[$i]);
             $anexa = "disabled";
             if ($dado[$i]['VISTODADOS'] == 1) {
               $anexa = "";
@@ -53,10 +64,43 @@ $aux = new Coleta();
           <form class="" action="" method="post">
           <div class="conteudo">
             <p>Numero da coleta: <?php echo $dado[$i]['NUMEROCOLETA']; ?> |
-              <a href="<?php echo $dado[$i]['PDFCOLETA']; ?>" download="<?php echo $dado[$i]['PDFCOLETA']; ?>" >DOWNLOAD PDF</a>
+              <a href="<?php echo $dado[$i]['PDFCOLETA']; ?>" download="<?php echo $dado[$i]['NOME']; ?>" >DOWNLOAD PDF</a>
               | Cliente: <?php echo $dado[$i]['CLIENTE']; ?> <i class="fa fa-check-circle" <?php echo $stl; ?>></i>
             </p>
-            <p> <button type="submit" class="btn btn-primary" value="<?php echo $dado[$i]['IDREGISTRO']; ?>" name="dados">Dados da coleta</button> <button type="submit" class="btn btn-secondary" value="<?php echo $dado[$i]['IDREGISTRO']; ?>" name="anexar" <?php echo $anexa; ?>>Anexar CTE/AUTORIZAÇÃO</button> </p>
+            <p> <button type="submit" class="btn btn-primary" value="<?php echo $dado[$i]['IDREGISTRO']; ?>" name="dados">Dados da coleta</button> <button type="submit" class="btn btn-secondary" value="<?php echo $dado[$i]['IDREGISTRO']; ?>" name="anexar" <?php echo $anexa; ?>>Anexar CTE/AUTORIZAÇÃO</button> 
+      </p>
+      <div class="progress">
+              <div class="<?php echo $progresso['class']; ?>" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $progresso['valor']; ?>%"><?php echo $progresso['estagio']; ?></div>
+            </div>
+			<p style="font-size: 12px;">SOLICITAÇÃO <i style="color: <?php echo $progresso['soli']; ?>" class="fa fa-circle"></i> | ACEITE <i style="color: <?php echo $progresso['ace']; ?>" class="fa fa-circle"></i> |
+            COLETADO <i style="color: <?php echo $progresso['col']; ?>" class="fa fa-circle"></i> | DOCUMENTADO <i <i style="color: <?php echo $progresso['doc']; ?>" class="fa fa-circle"></i> |
+             EMITIDO <i style="color: <?php echo $progresso['emi']; ?>" class="fa fa-circle"></i> |
+             EMBARCADO <i style="color: <?php echo $progresso['emb']; ?>" class="fa fa-circle"></i></p>
+			<p>
+			<table>
+				<?php
+				$idB = $dado[$i]['IDREGISTRO'];
+				$cte = $aux -> getCte($idB);
+				$r = count($cte);
+				for($x=0; $x<$r; $x++){
+				?>
+				<tr>
+					<td>CTE: <a href="<?php echo $cte[$x]['CTE'] ?>" download="<?php echo $cte[$x]['NOME'] ?>" ><?php echo $cte[$x]['NOME'] ?></a></td>
+				</tr>
+				<?php } ?>
+			</table>
+			<table>
+				<?php
+				$auto = $aux -> getAutorizacao($idB);
+				$z = count($auto);
+				for($y=0; $y<$z; $y++){
+				?>
+				<tr>
+					<td>Autorização: <a href="<?php echo $auto[$y]['AUTORIZACAO'] ?>" download="<?php echo $auto[$y]['NOME'] ?>" ><?php echo $auto[$y]['NOME'] ?></a></td>
+				</tr>
+				<?php } ?>
+			</table>
+			</p>
           </div>
           </form>
         <?php } ?>
@@ -90,6 +134,16 @@ if (isset($_POST['anexar'])) {
   ?>
   <script type="text/javascript">
       window.location.href = "anexar.php";
+  </script>
+  <?php
+}
+if (isset($_POST['concluido'])){
+	$id = $_POST['concluido'];
+	$aux -> concluidoOperacao($id);
+	?>
+  <script type="text/javascript">
+      alert("Concluido");
+	  window.location.href = "index.php";
   </script>
   <?php
 }

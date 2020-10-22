@@ -1,0 +1,78 @@
+@media (min-device-width: 0px) and (max-device-width: 767px){
+    .topo{
+        display: none;
+    }
+    *{
+        margin: 0px;
+        padding: 0px;
+    }
+    .rodape{
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        border-top: 1px solid black;
+        padding-top: 10px;
+        margin-bottom: 10px;
+        font-size: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .btnRodape{
+        padding: 5px;
+        border: 1px solid black;
+        width: 150px;
+        text-align: center;
+        border-radius: 10px;
+    }
+    .btnRodape a{
+        color: black;
+    }
+    .corpo{
+        width: 100%;
+        height: 85vh;
+        padding-top: 20px;
+    }
+    .coleta{
+        width: 86%;
+        margin-left: 5%;
+        margin-right: 5%;
+        height: auto;
+        border-radius: 20px;
+        border: 1px solid black;
+        padding: 20px;
+    }
+    .coletaTopo p{
+        height: 6vh;
+        font-size: 35px;
+    }
+    .coletaTopoIcone{
+        margin-bottom: 10px;
+        margin-right: 20px;
+        float: left;
+    }
+    .coletaInformacao{
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-size: 35px;
+    }
+    .coletaBotoes{
+        margin-top: 10px;
+    }
+    .coletaBotoes button{
+        font-size: 35px;
+        width: 50%;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        backface-visibility: hidden;
+        background: none;
+        border: none;
+    }
+    
+}
+
+@media (min-device-width: 768px) and (max-device-width: 2000px){
+    .rodape, .btnRodape{
+        display: none;
+    }
+}

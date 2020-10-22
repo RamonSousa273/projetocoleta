@@ -40,7 +40,7 @@
 }
 .grid{
   display: grid;
-  grid-template-columns: 20% 59% 19%;
+  grid-template-columns: 10% 59% 29%;
   grid-template-rows: auto;
   grid-gap: 10px;
 }

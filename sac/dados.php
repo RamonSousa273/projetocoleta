@@ -35,7 +35,11 @@
         $cor = verificaEstagio($dado);
          ?>
         <div class="dados">
-          <h4>Dados da coleta</h4>
+          <h4>Dados da coleta  </h4> 
+		  <form action="" method="post">
+		  <button type="submit" style="padding: 5px; border-radius: 5px;" value="<?php echo $id; ?>" 
+		  name="infor">Informações</button>
+		  </form>
           <p>SOLICITAÇÃO <i style="color: <?php echo $cor['soli']; ?>" class="fa fa-circle"></i> | ACEITE <i style="color: <?php echo $cor['ace']; ?>" class="fa fa-circle"></i> |
             COLETADO <i style="color: <?php echo $cor['col']; ?>" class="fa fa-circle"></i> | DOCUMENTADO <i <i style="color: <?php echo $cor['doc']; ?>" class="fa fa-circle"></i> |
              EMITIDO <i style="color: <?php echo $cor['emi']; ?>" class="fa fa-circle"></i> |
@@ -102,7 +106,7 @@
 				for($i=0; $i<$c; $i++){
 			?>
 				<tr>
-					<td><a href="<?php echo $dado[$i]['CTE']; ?>" download="<?php echo $dado[$i]['CTE']; ?>" >DOWNLOAD</a></td>
+					<td><a href="<?php echo $dado[$i]['CTE']; ?>" download="<?php echo $dado[$i]['CTE']; ?>" ><?php echo $dado[$i]['NOME']; ?></a></td>
 				</tr>
 				<?php } ?>
 		  </table>
@@ -116,10 +120,31 @@
 				for($i=0; $i<$c; $i++){
 			?>
 				<tr>
-					<td><a href="<?php echo $dado[$i]['AUTORIZACAO']; ?>" download="<?php echo $dado[$i]['AUTORIZACAO']; ?>" >DOWNLOAD</a></td>
+					<td><a href="<?php echo $dado[$i]['AUTORIZACAO']; ?>" download="<?php echo $dado[$i]['AUTORIZACAO']; ?>" ><?php echo $dado[$i]['NOME']; ?></a></td>
 				</tr>
 				<?php } ?>
 		  </table>
+      <br>
+      <table class="table table-dark" style="float: left; width: 50%;">
+      <thead>
+          <tr>
+            <td>Numero do embarque</td>
+            <td>Transferidor</td>
+          </tr>
+      </thead>
+      <tbody>
+      <?php 
+        $sql = "SELECT * FROM tbdembarque WHERE IDCOLETA = '$id'";
+        $sql = $conn->query($sql) or die($conn->error);
+		    while($dado = $sql->fetch_array()){
+      ?>
+          <tr>
+            <td><?php echo $dado['NUMEROEMBARQUE']; ?></td>
+            <td><?php echo $dado['TRANSFERIDOR']; ?></td>
+          </tr>
+        <?php } ?>
+      </tbody>
+      </table>
         </div>
       </div>
     </div>
@@ -144,6 +169,14 @@ if (isset($_POST['dados'])) {
   ?>
   <script type="text/javascript">
       window.location.href = "dados.php";
+  </script>
+  <?php
+}
+if (isset($_POST['infor'])){
+  $_SESSION['id2'] = $_POST['infor'];
+  ?>
+  <script type="text/javascript">
+      window.location.href = "dadosColeta.php";
   </script>
   <?php
 }

@@ -9,7 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/dados.css">
+    <link rel="stylesheet" href="css/dados2.css">
   </head>
   <body>
     <div class="corpo">
@@ -24,9 +24,7 @@
         <?php
         include_once("./../conexao.php");
         include_once("./../funcoes.php");
-        $id = $_SESSION['id'];
-        $sql = "UPDATE tbdcoletas SET VISTODADOS = '1' WHERE IDREGISTRO = '$id'";
-        $sql = $conn->query($sql) or die($conn->error);
+        $id = $_SESSION['id2'];
         $sql = "SELECT * FROM tbdcoletas WHERE IDREGISTRO = '$id'";
         $sql = $conn->query($sql) or die($conn->error);
         $dado = $sql->fetch_array();
@@ -38,7 +36,7 @@
            <div class="cont2">
              <?php  ?>
              <div class="conteudo1">
-               <p>Numero da nota: <?php echo $dado['NUMEROCOLETA']; ?></p>
+               <p>Numero da nota:  <?php echo $dado['NUMEROCOLETA']; ?></p>
              </div>
              <div class="conteudo1">
                <p> <a href="<?php echo $dado['PDFCOLETA']; ?>" download="<?php echo $dado['PDFCOLETA']; ?>" >DOWNLOAD PDF</a> </p>
@@ -73,9 +71,6 @@
                     </tr>
                     <tr>
                       <td>Comprimento: </td> <td><?php echo $dado3['COMPRIMENTO']; ?></td>
-                    </tr>
-                    <tr>
-                      <td>Lacre: </td> <td><?php echo $dado3['NUMEROLACRE']; ?></td>
                     </tr>
                   </table>
                 </div>

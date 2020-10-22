@@ -1,4 +1,4 @@
-<?php session_start(); 
+<?php session_start();
 include_once("./../class.php");
   include_once("./../funcoes.php");
   $aux = new Coleta();
@@ -36,8 +36,14 @@ include_once("./../class.php");
              ?>
             <form class="" action="" method="post">
             <p> Numero do embarque: <input type="text" class="form-control" name="regval" value=""> </p>
-			<p> Numero do CTE: <input type="text" class="form-control" name="cte" value=""> </p>
-			<p> Transferidor: <input type="text" class="form-control" name="transferidor" value=""> </p>
+			<p> Transferidor: <select class="form-control" name="transferidor">
+								<option value="">--Selecione uma opção--</option>
+								<option value="JEM (DFL)">JEM (DFL)</option>
+								<option value="SOL">SOL</option>
+								<option value="LATAM">LATAM</option>
+								<option value="GOL">GOL</option>
+								<option value="AZUL">AZUL</option>
+							  </select> </p>
             <p> <button type="submit" class="btn btn-primary" name="reg">Registrar</button> </p>
             </form>
           </div>
@@ -74,15 +80,15 @@ if (isset($_POST['emb'])) {
   <?php
 }
 if (isset($_POST['reg'])) {
-  
+
   $id = $_SESSION['id'];
   $val = $_POST['regval'];
   $cte = $_POST['cte'];
   $transferidor = $_POST['transferidor'];
-  
-  $aux->addEmbarque($id, $val, $cte, $transferidor);
-  
-  
+
+  $aux->addEmbarque($id, $val, $transferidor);
+
+
   ?>
   <script type="text/javascript">
 	  alert("Registrado com sucesso!");

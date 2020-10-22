@@ -17,11 +17,13 @@ $aux = new Coleta();
   </head>
   <body>
     <div class="corpo">
-      <form class="" action="" method="post">
+    <form class="" action="" method="post">
       <div class="menu">
         <h3>MENU</h3>
         <hr>
         <button type="submit" value="0" name="ini">INICÍO</button>
+        <button type="submit" value="0" name="nova">NOVA COLETA</button>
+        <button type="submit" value="0" name="sair">SAIR</button>
       </div>
       </form>
       <div class="direito">
@@ -31,11 +33,11 @@ $aux = new Coleta();
           </div>
           <div class="conteudo2">
             <form class="" enctype="multipart/form-data" action="" method="post">
-              <h3>Anexar CTE/Autorização</h3>
-              <p>CTE:</p>
+              <h3>Anexar Memorando/Notas</h3>
+              <p>Memorando:</p>
               <input type="file" class="form-control" accept=".pdf" name="CTE[]" value="" multiple>
               <br>
-              <p>Autorização:</p>
+              <p>Notas:</p>
               <input type="file" class="form-control" accept=".pdf" name="AUTO[]" value="" multiple>
               <br>
               <button type="submit" class="btn btn-primary" name="ANEXAR">Anexar</button>
@@ -54,6 +56,13 @@ $aux = new Coleta();
   </body>
 </html>
 <?php
+if (isset($_POST['nova'])) {
+  ?>
+  <script type="text/javascript">
+      window.location.href = "novaColeta.php";
+  </script>
+  <?php
+}
 if (isset($_POST['ini'])) {
   ?>
   <script type="text/javascript">
@@ -76,7 +85,7 @@ if (isset($_POST['ANEXAR'])) {
 	}
 	if($precte){
 		$file = $_FILES['CTE'];
-		$aux -> anexarCTE($file, $id);
+		$aux -> anexarMemorando($file, $id);
 	}
 
 	foreach($_FILES['AUTO']['name'] as $ind => $val){
@@ -86,7 +95,7 @@ if (isset($_POST['ANEXAR'])) {
 	}
 	if($preaut){
 		$file = $_FILES['AUTO'];
-		$aux -> anexarAutorizacao($file, $id);
+		$aux -> anexarNotasRetirada($file, $id);
 	}
 	?>
 		<script type="text/javascript">

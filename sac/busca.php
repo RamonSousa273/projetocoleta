@@ -1,60 +1,48 @@
-<?php session_start(); 
-    include_once("./../class.php");
-    include_once("./../funcoes.php");
-  $aux = new Coleta();
-  /*if(isset($_SESSION['SAC'])){
+<?php
+session_start();
+include_once("./../class.php");
+include_once("./../funcoes.php");
+$aux = new Coleta();
 
-  }else{
-    ?>
-  <script type="text/javascript">
-      alert("Faça Login!");
-      window.location.href = "novaColeta.php";
-  </script>
-  <?php
-  }*/
+$data = $_POST['coleta'];
+$data2 = $_POST['coleta2'];
 ?>
+
 <!DOCTYPE html>
-<html lang="pt-br" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Home - SAC/Torre de Controle</title>
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/index.css">
-    <script type="text/javascript">
-
-      Redirect();
-      function Redirect()
-      {
-		setTimeout("location.reload(true);",120000);
-      }
-    </script>
-  </head>
-  <body>
-    <div class="corpo">
-      <form class="" action="" method="post">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" 
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" 
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" 
+    crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" 
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" 
+    crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" 
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" 
+    crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" 
+    integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" 
+    crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/busca.css">
+</head>
+<body>
+    <form class="" action="" method="post">
       <div class="menu">
         <h3>MENU</h3>
-        <p>Ultima atualização: <?php echo date("H:i"); ?></p>
         <hr>
         <button type="submit" value="0" name="ini">INICÍO</button>
         <button type="submit" value="0" name="nova">NOVA COLETA</button>
-        <button type="submit" value="0" name="sair">SAIR</button>
       </div>
-      </form>
-      <div class="coletaPrev">
-        <div class="titulo">
-          <h3>COLETAS</h3>
-        </div>
-        <div class="grid">
-          <?php
+    </form>
 
-          $coletas = new Coleta;
-          $registros = $coletas -> getColeta(0);
+    <div class="direita">
+    <div class="grid">
+          <?php
+          $registros = $aux -> buscarColetaData($data, $data2);
           $q = count($registros);
           for ($i=0; $i < $q ; $i++) {
             $progresso = verificaEstagio($registros[$i]);
@@ -65,12 +53,10 @@
            ?>
           <div class="conteudo">
             <form class="" action="" method="post">
-            <p>Numero da coleta: <?php echo $registros[$i]['NUMEROCOLETA']; ?> 
-            <button style="background-color: #FA5858;" type="submit" name="excluir" value="<?php echo $registros[$i]['IDREGISTRO']; ?>">Excluir</button>
+            <p>Numero da coleta: <?php echo $registros[$i]['NUMEROCOLETA']; ?> <button style="background-color: #FA5858;" type="submit" name="excluir" value="<?php echo $registros[$i]['IDREGISTRO']; ?>">Excluir</button>
               <button style="background-color: #2E9AFE;" type="submit" name="dados" value="<?php echo $registros[$i]['IDREGISTRO']; ?>">Dados</button>
-            <button type="submit" name="nm" value="<?php echo $registros[$i]['IDREGISTRO']; ?>">Anexar Notas/Memorandos</button>
-        <button type="submit" name="AUTO" value="<?php echo $registros[$i]['IDREGISTRO']; ?>" <?php echo $auto;
-			  ?>>Autorização</button>
+			  <button type="submit" name="AUTO" value="<?php echo $registros[$i]['IDREGISTRO']; ?>" <?php echo $auto;
+			  ?>>Autorização</dados>
               <button style="background-color: #64FE2E;" type="submit" name="consolidar" value="<?php echo $registros[$i]['IDREGISTRO'];?>" <?php echo $progresso['con']; ?> >Consolidar</button>
               <?php echo date('d/m/Y', strtotime($registros[$i]['DATALIMITE'])); ?>
             </p>
@@ -86,9 +72,16 @@
           </div>
           <?php } ?>
         </div>
-      </div>
+        <?php
+            if($q == 0){
+                ?>
+                <img src="img/listaVazia.svg" alt="" style="width: 50%; margin-top: 40px;">
+                <h1>Sem coletas nesta data</h1>
+                <?php
+            }
+        ?>
     </div>
-  </body>
+</body>
 </html>
 <?php
 if (isset($_POST['nova'])) {
@@ -113,17 +106,6 @@ if (isset($_POST['AUTO'])){
   </script>
   <?php
 }
-
-if(isset($_POST['nm'])){
-  $_SESSION['id'] = $_POST['nm'];
-  ?>
-  <script type="text/javascript">
-      window.location.href = "addNM.php";
-  </script>
-  <?php
-  
-}
-
 if (isset($_POST['dados'])) {
   $id = $_POST['dados'];
   $_SESSION['id'] = $id;
@@ -150,11 +132,6 @@ if (isset($_POST['consolidar'])) {
       window.location.href = "index.php";
   </script>
   <?php
-}
-if(isset($_POST['sair'])){
-  include_once('./../ClassLogin.php');
-  $ajd = new ControleLogin();
-  $ajd -> LogOff();
 }
 
  ?>

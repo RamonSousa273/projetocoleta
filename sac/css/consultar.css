@@ -1,0 +1,43 @@
+body{
+    padding: 0px;
+    margin: 0px;
+}
+.menu{
+    width: 15%;
+    height: 100vh;
+    background-color: #6E6E6E;
+    text-align: center;
+    color: white;
+    float: left;
+  }
+  .menu button{
+    width: 95%;
+    height: 8%;
+    margin-bottom: 10px;
+    background-color: inherit;
+    border: 2px solid #F7FE2E;
+    border-radius: 10px;
+    color: white;
+  }
+  .menu button:hover{
+    cursor: pointer;
+    background-color: #F3F781;
+    color: black;
+  }
+.direita{
+    width: 85%;
+    height: 100vh;
+    background-color: #848484;
+    float: right;
+
+}
+.dentroForm{
+    width: 40%;
+    height: auto;
+    border-radius: 20px;
+    background-color: #A4A4A4;
+    text-align: center;
+    padding: 10px;
+    margin-left: 30%;
+    margin-top: 9%;
+}

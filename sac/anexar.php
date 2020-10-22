@@ -31,10 +31,7 @@ $aux = new Coleta();
           </div>
           <div class="conteudo2">
             <form class="" enctype="multipart/form-data" action="" method="post">
-              <h3>Anexar CTE/Autorização</h3>
-              <p>CTE:</p>
-              <input type="file" class="form-control" accept=".pdf" name="CTE[]" value="" multiple>
-              <br>
+              <h3>Anexar Autorização</h3>
               <p>Autorização:</p>
               <input type="file" class="form-control" accept=".pdf" name="AUTO[]" value="" multiple>
               <br>
@@ -42,6 +39,31 @@ $aux = new Coleta();
               <br>
               <br>
             </form>
+			<p>
+			<table>
+				<?php
+				$idB = $_SESSION['id'];
+				$cte = $aux -> getCte($idB);
+				$c = count($cte);
+				for($i=0; $i<$c; $i++){
+				?>
+				<tr>
+					<td>CTE: <a href="<?php echo $cte[$i]['CTE'] ?>" download="<?php echo $cte[$i]['NOME'] ?>" ><?php echo $cte[$i]['NOME'] ?></a></td>
+				</tr>
+				<?php } ?>
+			</table>
+			<table>
+				<?php
+				$auto = $aux -> getAutorizacao($idB);
+				$c = count($auto);
+				for($i=0; $i<$c; $i++){
+				?>
+				<tr>
+					<td>Autorização: <a href="<?php echo $auto[$i]['AUTORIZACAO'] ?>" download="<?php echo $auto[$i]['NOME'] ?>" ><?php echo $auto[$i]['NOME'] ?></a></td>
+				</tr>
+				<?php } ?>
+			</table>
+			</p>
           </div>
           <div class="conteudo">
 
@@ -67,17 +89,7 @@ if (isset($_POST['ANEXAR'])) {
   $id = $_SESSION['id'];
   $data = date("Y-m-d");
   $hora = date("H:i");
-  $precte = false;
   $preaut = false;
-	foreach($_FILES['CTE']['name'] as $ind => $val){
-    if(!empty($val)){
-		$precte = true;
-    }
-	}
-	if($precte){
-		$file = $_FILES['CTE'];
-		$aux -> anexarCTE($file, $id);
-	}
 
 	foreach($_FILES['AUTO']['name'] as $ind => $val){
 		if(!empty($val)){

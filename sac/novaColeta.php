@@ -2,6 +2,8 @@
 session_start();
 include_once("./../preventivo.php");
 include_once("./../conexao.php");
+include_once("./../class.php");
+$aux = new Coleta;
  ?>
 <!DOCTYPE html>
 <html lang="pt-br" dir="ltr">
@@ -57,24 +59,16 @@ include_once("./../conexao.php");
               <p><input type="time" class="form-control" style="width: 49%; float: left;" name="hora" value="" required> <input type="time" class="form-control" style="width: 49%; float: right;" name="hora2" value="" required></p>
             </div>
             <div class="conteudo">
-              <p>Lacre: </p>
-              <select class="form-control" name="lacre" required>
-                <option value=""></option>
-                <option value="1">Sim</option>
-                <option value="0">Não</option>
-              </select>
-            </div>
-            <div class="conteudo">
               <p>PDF da coleta:</p>
-              <input type="file" id="ajustaPDF" class="form-control" name="pdf" value="">
+              <input type="file" id="ajustaPDF" accept=".pdf" class="form-control" name="pdf" value="" required>
             </div>
             <div class="conteudo">
               <p>Data limite para coleta:</p>
-              <input type="date" class="form-control" name="dtlim" value="">
+              <input type="date" class="form-control" name="dtlim" value="" required>
             </div>
             <div class="conteudo">
               <p>Hora limite para coleta:</p>
-              <input type="time" class="form-control" name="horalim" value="">
+              <input type="time" class="form-control" name="horalim" value="" required>
             </div>
           </div>
           <br>
@@ -105,54 +99,11 @@ if (isset($_POST['ini'])) {
   <?php
 }
 if (isset($_POST['cad'])) {
-  /*include_once("./../preventivo.php");
-  include_once("./../conexao.php");
-  $coleta = removeCaracteresSQL($_POST['numC']);
-  $cliente = removeCaracteresSQL($_POST['cliente']);
-  $hora = removeCaracteresSQL($_POST['hora']);
-  $hora2 = removeCaracteresSQL($_POST['hora2']);
-  $lacre = removeCaracteresSQL($_POST['lacre']);
-  $observacao = removeCaracteresSQL($_POST['obs']);
-  $agente = removeCaracteresSQL($_POST['agente']);
-  $datalim = removeCaracteresSQL($_POST['dtlim']);
-  $horalim = removeCaracteresSQL($_POST['horalim']);
-  $horaso = date("H:i");
-  $dataso = date("Y-m-d");
-
-  $ext = ".pdf";
-  $new_name = $_FILES['pdf']['name'];
-  $dir = "./../uploads/";
-
-  if (move_uploaded_file($_FILES['pdf']['tmp_name'], $dir.$new_name)) {
-  $local = "./../uploads/" . $new_name;
-  $sql = "INSERT INTO tbdcoletas(NUMEROCOLETA, CLIENTE, HORAINI, HORAFIM, PDFCOLETA, DATASOLICITACAO, HORASOLICITACAO, LACRE, OBSERVACAO, DATALIMITE, HORALIMITE, AGENTE)
-  VALUES('$coleta', '$cliente', '$hora', '$hora2', '$local', '$dataso', '$horaso', '$lacre', '$observacao', '$datalim', '$horalim', '$agente')";
-  $sql = $conn->query($sql) or die($conn->error);
-
-  ?>
-  <script type="text/javascript">
-    alert("Cadastrado com sucesso!");
-    window.location.href = "index.php";
-  </script>
-  <?php
-}else{
-  ?>
-  <script type="text/javascript">
-    alert("Falha no cadastro!");
-    window.location.href = "index.php";
-  </script>
-  <?php
-}*/
-
-include_once("./../preventivo.php");
-include_once("./../conexao.php");
-include_once("./../class.php");
 
 $coleta = removeCaracteresSQL($_POST['numC']);
 $cliente = removeCaracteresSQL($_POST['cliente']);
 $hora = removeCaracteresSQL($_POST['hora']);
 $hora2 = removeCaracteresSQL($_POST['hora2']);
-$lacre = removeCaracteresSQL($_POST['lacre']);
 $observacao = removeCaracteresSQL($_POST['obs']);
 $agente = removeCaracteresSQL($_POST['agente']);
 $datalim = removeCaracteresSQL($_POST['dtlim']);
@@ -165,7 +116,6 @@ $col->cliente = $cliente;
 $col->agente = $agente;
 $col->horaIni = $hora;
 $col->horaFim = $hora2;
-$col->lacre = $lacre;
 $col->dataLim = $datalim;
 $col->horaLim = $horalim;
 $col->observacao = $observacao;
